@@ -58,17 +58,28 @@ public class MainActivity extends AppCompatActivity {
             // Requesting Permission to access External Storage
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
 
-            File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS + "/Personal NoteBook/Backup");
+            if (folder.exists()) {
+                Toast.makeText(this, "exists", Toast.LENGTH_SHORT).show();
+//            File file = new File(folder, "geeksData.txt");
+                File file = new File(folder, "personal_notebook_backup.json");
+                writeTextData(file, "Public Test data :: " + System.currentTimeMillis());
+            } else {
+                Toast.makeText(this, "else => exists", Toast.LENGTH_SHORT).show();
+                folder.mkdirs();
+                //            File file = new File(folder, "geeksData.txt");
+                File file = new File(folder, "personal_notebook_backup.json");
+                writeTextData(file, "Public Test data :: " + System.currentTimeMillis());
+            }
 
-            File file = new File(folder, "geeksData.txt");
-            writeTextData(file, "Public Test data :: " + System.currentTimeMillis());
         });
 
         //For private folder
         findViewById(R.id.savePrivate).setOnClickListener(view -> {
             File folder = getExternalFilesDir("GeeksForGeeks");
 
-            File file = new File(folder, "gfg.txt");
+//            File file = new File(folder, "gfg.txt");
+            File file = new File(folder, "personal_notebook_backup.json");
             writeTextData(file, "Private Test data :: " + System.currentTimeMillis());
         });
     }
@@ -80,12 +91,14 @@ public class MainActivity extends AppCompatActivity {
             fileOutputStream.write(data.getBytes());
             Toast.makeText(this, "Done" + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
+            Toast.makeText(this, "Error :: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         } finally {
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
                 } catch (IOException e) {
+                    Toast.makeText(this, "Error :: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
